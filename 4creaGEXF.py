@@ -46,18 +46,18 @@ for nombre_directorio, subdirectorios, ficheros in os.walk(configuracion.RESULTA
 	ultima=nombre_directorio[len(nombre_directorio)-1]
 	penultima=nombre_directorio[len(nombre_directorio)-2]
 	ciclo1=""
-	lista=["/"+str(i) for i in range(1,configuracion.EJECUCIONES+1)]
+	lista=["\\"+str(i) for i in range(1,configuracion.EJECUCIONES+1)]
 	if(penultima+ultima in lista):
-		if penultima+ultima==str("/"+str(configuracion.EJECUCIONES)):
+		if penultima+ultima==str("\\"+str(configuracion.EJECUCIONES)):
 			ultima=str(configuracion.EJECUCIONES)
-		primero=open(nombre_directorio+"/datos-salida_"+ultima+".txt","r")
+		primero=open(nombre_directorio+"\\datos-salida_"+ultima+".txt","r")
 		lineasPrimero = primero.readlines()
 		primero.close()
 		ciclo1,AVCL,components,diam,APL,order = lineasPrimero[len(lineasPrimero)-1].split("\t")
-		G1 = nx.read_adjlist(nombre_directorio+"/graph_test_"+ciclo1+".adjlist", nodetype=int)
+		G1 = nx.read_adjlist(nombre_directorio+"\\graph_test_"+ciclo1+".adjlist", nodetype=int)
 		nx.set_node_attributes(G1, x, "x")
 		nx.set_node_attributes(G1, y, "y")
-		nx.write_gexf(G1, nombre_directorio+"/graph_test_"+ciclo1+".gexf")
+		nx.write_gexf(G1, nombre_directorio+"\\graph_test_"+ciclo1+".gexf")
 	#for nombre_fichero in ficheros:
 		#if(nombre_fichero!="graph_test_"+ciclo1+".graphml" and nombre_fichero!="graph_test_"+ciclo1+".adjlist" and nombre_fichero!="distGradoshist_test_"+ciclo1+".txt.png" and nombre_fichero!="img_graph_test_"+ciclo1+".adjlist.png"):
 			#os.remove(nombre_directorio+"/"+nombre_fichero)#elimina el archivo indicado

@@ -32,13 +32,14 @@ for i in range(len(configuracion.REGLAS)):
 
 COLS_ROUTING = []
 for r in configuracion.ROUTING:
-    r = configuracion.ROUTING[i]
     if r == "SHORTEST-PATH":
         ar = "SP"
     elif r == "COMPASS-ROUTING":
         ar = "CR"
     elif r == "RANDOM-WALK":
         ar = "RW"
+    else:
+        ar = r
     COLS_ROUTING.append(ar)
 
 COLS_CONEXIONES = "n"

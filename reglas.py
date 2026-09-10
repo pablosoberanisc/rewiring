@@ -23,7 +23,10 @@ class Reglas:
             self.candidato=self.regla_3()
         elif self.r==4:
             self.candidato=self.regla_4()
+        elif self. r==5:
+            self.candidato=self.regla_5()
         return self.candidato
+
 
     def regla_1(self):
         self.f_n = sorted(self.f_n.items(), key=operator.itemgetter(1), reverse=True)# Ordeno el diccionario f_n de mayor a menor frecuencia
@@ -143,3 +146,11 @@ class Reglas:
         proba = list(probabilidad_normalizada.values())
         candidato = np.random.choice(nodos, p=proba)
         return candidato
+
+
+    def regla_5(self):
+        self.f_n = sorted(self.f_n.items(), key=operator.itemgetter(1), reverse=False)# Ordeno el diccionario f_n de menor a mayor frecuencia
+        self.f_n = dict(self.f_n)#convierto la lista de tuplas en un diccionario nuevamente, pero ya ordenado
+        claves=list(self.f_n.keys())#obtengo las claves del diccionario f_n, en este caso son los id´s de los nodos visitados
+        clave=claves[0]
+        return clave

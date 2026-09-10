@@ -22,7 +22,7 @@ def creaHistogramaDistGrados(nombre,nodos,ruta,file):
 	plt.ylabel('Frecuencia')
 	plt.xlabel('Grado')
 	plt.title('Distribucion de grados')
-	plt.savefig(ruta+"/distGrados"+file+".png", dpi=200)
+	plt.savefig(ruta+"\\distGrados"+file+".png", dpi=200)
 
 def getCoordinates(nodeId,nodos,contador):
 		"""calculates the coordinates of an node id according to the grid used by the simulation """
@@ -66,7 +66,7 @@ def draw_graph_grid(graphFile,nodes,ruta,file):
 	clb = plt.colorbar(nodes,cax=cax)
 	clb.set_label("Grado",size=12)
 	clb.ax.tick_params(labelsize=12)
-	plt.savefig(ruta+"/img_"+file+".png", dpi=50)
+	plt.savefig(ruta+"\\img_"+file+".png", dpi=50)
 
 def getCoordinatesAnillo(nodeId,nodos):
 	#transformacion de coordenadas polares a rectangulares:
@@ -105,28 +105,28 @@ def draw_graph_ring(graphFile,nodes,ruta,file):
 	clb = plt.colorbar(nodes,cax=cax)
 	clb.set_label("Grado",size=12)
 	clb.ax.tick_params(labelsize=12)
-	plt.savefig(ruta+"/img_"+file+".png", dpi=50)
+	plt.savefig(ruta+"\\img_"+file+".png", dpi=50)
 
 for nombre_directorio, subdirectorios, ficheros in os.walk(configuracion.RESULTADOS_DIR):#recorro recursivamente un directorio
 	ultima=nombre_directorio[len(nombre_directorio)-1]
 	penultima=nombre_directorio[len(nombre_directorio)-2]
 	ciclo1=""
-	lista=["/"+str(i) for i in range(1,configuracion.EJECUCIONES+1)]
+	lista=[os.sep+str(i) for i in range (1, configuracion.EJECUCIONES+1)]
 	if(penultima+ultima in lista):
-		if penultima+ultima==str("/"+str(configuracion.EJECUCIONES)):
+		if penultima+ultima==str(os.sep+str(configuracion.EJECUCIONES)):
 			ultima=str(configuracion.EJECUCIONES)
-		primero=open(nombre_directorio+"/datos-salida_"+ultima+".txt","r")
+		primero=open(nombre_directorio+os.sep+"datos-salida_"+ultima+".txt","r")
 		lineasPrimero = primero.readlines()
 		primero.close()
 		ciclo1,AVCL,components,diam,APL,order = lineasPrimero[len(lineasPrimero)-1].split("\t")
 		if "malla" in nombre_directorio:
-			draw_graph_grid(nombre_directorio+"/graph_test_"+ciclo1+".adjlist",configuracion.COLUMNS,nombre_directorio,"graph_test_"+ciclo1)
+			draw_graph_grid(nombre_directorio+os.sep+"graph_test_"+ciclo1+".adjlist",configuracion.COLUMNS,nombre_directorio,"graph_test_"+ciclo1)
 			plt.close()
 			nodos_malla = configuracion.COLUMNS*configuracion.ROWS
-			creaHistogramaDistGrados(nombre_directorio+"/hist_test_"+ciclo1+".txt",nodos_malla,nombre_directorio,"hist_test_"+ciclo1)
+			creaHistogramaDistGrados(nombre_directorio+os.sep+"hist_test_"+ciclo1+".txt",nodos_malla,nombre_directorio,"hist_test_"+ciclo1)
 			plt.close()
 		else:
-			draw_graph_ring(nombre_directorio+"/graph_test_"+ciclo1+".adjlist",configuracion.NODOS_ANILLO,nombre_directorio,"graph_test_"+ciclo1)
+			draw_graph_ring(nombre_directorio+os.sep+"graph_test_"+ciclo1+".adjlist",configuracion.NODOS_ANILLO,nombre_directorio,"graph_test_"+ciclo1)
 			plt.close()
-			creaHistogramaDistGrados(nombre_directorio+"/hist_test_"+ciclo1+".txt",configuracion.NODOS_ANILLO,nombre_directorio,"hist_test_"+ciclo1)
+			creaHistogramaDistGrados(nombre_directorio+os.sep+"hist_test_"+ciclo1+".txt",configuracion.NODOS_ANILLO,nombre_directorio,"hist_test_"+ciclo1)
 			plt.close()
