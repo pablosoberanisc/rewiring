@@ -48,6 +48,50 @@ class Main:#hereda de la clase object, hay que recordar que en Python todo es un
 		self.__tamEnlace=self.__diametro / config.LONG_ENLACE
 		nx.write_adjlist(self.__graph,"graph.adjlist")
 
+	#---ESFERA---------------------------
+
+	def fibonacci_sphere(self, n_nodos):
+		puntos = []
+		phi = math.pi * (3 - math.sqrt(5))
+		for i in range(n_nodos):
+			y = 1 - (i / (n_nodos - 1)) * 2
+			radio = math.sqrt(1 - y * y)
+			theta = phi * i
+			x = math.cos(theta) * radio
+			z = math.sin(theta) * radio
+			puntos.append((x, y, z))
+		return puntos
+
+	def distancia_esfera(self, p1, p2):
+		dot = p1[0]*p2[0] + p1[1]*p2[1] + p1[2]*p2[2]
+		dot = max(-1, min(1, dot))
+		return math.acos(dot)
+
+	def createSphere(self):
+		n = self.__nodes
+		k = config.K_VECINOS if hasattr(config, 'K_VECINOS') else 4
+		puntos = self.fibonacci_sphere(n)
+		G = nx.Graph()
+		for i in range(n):
+			G.add_node(i + 1)
+		for i in range(n):
+			distancias = []
+			for j in range(n):
+				if i != j:
+					d = self.distancia_esfera(puntos[i], puntos[j])
+					distancias.append((j + 1, d))  # ← j+1 en vez de j
+			distancias.sort(key=lambda x: x[1])
+			for j, d in distancias[:k]:
+				G.add_edge(i + 1, j)  # ← j ya tiene +1
+		self.__graph = G
+		self.__sphere_points = puntos
+		self.__tamEnlace = math.pi / config.LONG_ENLACE
+		nx.write_adjlist(self.__graph, "graph.adjlist")
+
+	@property
+	def sphere_points(self):
+		return self.__sphere_points
+
 	#---GETTERS y SETTERS------------------
 
 	@property
@@ -101,11 +145,15 @@ if __name__ == "__main__":
 	#Se selecciona el grafo con el que se trabajará en la simulación
 	#1.- Malla
 	#3.- Anillo
+	#7.- Esfera
 	if(main.grafo==1):
 		main.createGrid()
 		main.nodosTotales=main.rows*main.columns
 	elif(main.grafo==3): 
 		main.createRing()
+		main.nodosTotales=main.nodes
+	elif(main.grafo==7):
+		main.createSphere()
 		main.nodosTotales=main.nodes
 	#se muestra el grafo en una imágen:
 	#plt.cla()

@@ -171,6 +171,8 @@ class Encaminamiento:
                 dest = random.randint(1,main.nodes)
             elif main.grafo==1:#si es una malla con la que estoy trabajando:
                 dest = random.randint(1,main.rows*main.columns)
+            elif main.grafo==7:
+                dest = random.randint(1, main.nodes)
             if dest != identificador and dest not in vecinos:
                 d = True
         return dest
