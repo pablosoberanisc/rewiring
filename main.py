@@ -67,6 +67,17 @@ class Main:#hereda de la clase object, hay que recordar que en Python todo es un
 		dot = max(-1, min(1, dot))
 		return math.acos(dot)
 
+	def distancia_haversine(self, p1, p2):
+		"""Great circle distance usando Haversine. p1, p2 en (x,y,z)."""
+		lat1 = math.asin(p1[1])
+		lon1 = math.atan2(p1[2], p1[0])
+		lat2 = math.asin(p2[1])
+		lon2 = math.atan2(p2[2], p2[0])
+		dlat = lat2 - lat1
+		dlon = lon2 - lon1
+		a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+		return 2 * math.asin(math.sqrt(a))
+
 	def createSphere(self):
 		n = self.__nodes
 		k = config.K_VECINOS if hasattr(config, 'K_VECINOS') else 4
@@ -78,15 +89,16 @@ class Main:#hereda de la clase object, hay que recordar que en Python todo es un
 			distancias = []
 			for j in range(n):
 				if i != j:
-					d = self.distancia_esfera(puntos[i], puntos[j])
-					distancias.append((j + 1, d))  # ← j+1 en vez de j
+					d = self.distancia_haversine(puntos[i], puntos[j])
+					distancias.append((j + 1, d))
 			distancias.sort(key=lambda x: x[1])
 			for j, d in distancias[:k]:
-				G.add_edge(i + 1, j)  # ← j ya tiene +1
+				G.add_edge(i + 1, j)
 		self.__graph = G
 		self.__sphere_points = puntos
 		self.__tamEnlace = math.pi / config.LONG_ENLACE
 		nx.write_adjlist(self.__graph, "graph.adjlist")
+
 
 	@property
 	def sphere_points(self):
@@ -220,3 +232,34 @@ if __name__ == "__main__":
 		for et in event_types:
 			row.append(str(event_counts.get(et, 0)))
 		mf.write(",".join(row) + "\n")
+
+
+	if main.grafo == 7:
+		import matplotlib.pyplot as plt
+		
+		pts = main.sphere_points
+		grados = dict(main.graph.degree())
+		
+		fig, ax = plt.subplots(figsize=(15, 15))
+		ax.axis('off')
+		
+		coordenadas = {i+1: (pts[i][0], pts[i][2]) for i in range(len(pts))}
+		
+		color = [float(grados[v]) for v in sorted(main.graph.nodes())]
+		size  = [float(grados[v]) * 50 for v in sorted(main.graph.nodes())]
+		
+		nodes_draw = nx.draw_networkx_nodes(main.graph, coordenadas,
+											node_color=color, node_size=size,
+											cmap='rainbow', alpha=0.9, ax=ax)
+		nx.draw_networkx_edges(main.graph, coordenadas, alpha=0.3,
+							width=0.5, edge_color='gray', ax=ax)
+		
+		from mpl_toolkits.axes_grid1 import make_axes_locatable
+		divider = make_axes_locatable(ax)
+		cax = divider.append_axes("right", size="3%", pad=0.1)
+		clb = plt.colorbar(nodes_draw, cax=cax)
+		clb.set_label("Grado", size=12)
+		plt.title(f"Esfera Fibonacci — Regla {config.REGLA}, {config.ROUTING}")
+		plt.savefig(f"esfera_fibonacci_R{config.REGLA}.png", dpi=150)
+		plt.close()
+		print(f"Imagen guardada: esfera_fibonacci_R{config.REGLA}.png")
