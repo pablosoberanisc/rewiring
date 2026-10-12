@@ -123,9 +123,9 @@ class ComplexNetwork(Model):
             esRW = self.__algoritmoEncaminamiento in ("RANDOM-WALK","RW-DEGREE","RW-INVERSE","RW-NODE2VEC")
             if((event.package.distanciaMaxima > 1 and esRW) or (event.package.destino!=self.id and self.__algoritmoEncaminamiento=="COMPASS-ROUTING")):
                 auxNeighbors=self.neighbors+self.vecinosConectadosDinamicos#Creo una copia de mi lista de vecinos
-                for n in event.package.ruta:#Descarto de la copia a todos los vecinos por los que ya paso el paquete
-                    if n in auxNeighbors:
-                        auxNeighbors.remove(n)
+                #for n in event.package.ruta:#Descarto de la copia a todos los vecinos por los que ya paso el paquete
+                    #if n in auxNeighbors:
+                        #auxNeighbors.remove(n)
                 if(len(auxNeighbors)==0):#si ya no tengo a quien enviarle el paquete, por que son nodos ya visitados, mando ack, fase de BACKTRACK
                     event.package.ruta.append(self.id)#agrego a la ruta del paquete mi id
                     #print("soy",self.id,"ya no tengo a quien enviarle el paquete, ya llego a su destino, la ruta por la que paso es",event.package.ruta)
